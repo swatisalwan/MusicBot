@@ -35,7 +35,16 @@ def get_track(parameters):
    
     return trackInfo
 
-#client=musixmatch.chart_tracks_get(1,1,1,"en","json")
+
+def get_lyrics(parameters):
+    track = parameters['song_type']
+    artist = parameters['music_artist']
+    new_lyrics={
+        'song_name':track
+    }
+    records.insert_one(new_lyrics)
+    info=musixmatch.matcher_track_get(track,artist)
+    return info
 #print(client)
 
         
@@ -47,5 +56,11 @@ def fetch_reply(msg, session_id):
         trackURL=trackInfo['message']['body']['track_list'][0]['track']['track_share_url']
         print(str(trackURL))
         return trackURL
+    elif response.intent.display_name == 'get_lyrics':
+        lyricInfo=get_lyrics(response.parameters)
+        lyricURL=lyricInfo['message']['body']['track']['track_share_url']
+        return lyricURL
+
+
     else:
         return response.fulfillment_text
